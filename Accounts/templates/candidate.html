@@ -1,0 +1,138 @@
+    {% extends "base.html" %}
+    {% load static %}
+
+    {% block title %}Candidate Login | Signup{% endblock title %}
+    {% block candidateactive %}active{% endblock candidateactive %}
+
+
+    {% block body %}
+
+    {% block extracss %}
+    <link rel="stylesheet" href="{% static 'css/Accounts.css' %}">
+    <style>
+        .bg-image{
+            filter: blur(8px);
+        -webkit-filter: blur(8px);
+        }
+    </style>
+    {% endblock extracss %}
+
+    <div style="display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 70px); margin-top: 70px; padding-bottom: 50px;">
+        <div class="wrapper">
+            <div class="title-text">
+                <div class="title login">
+                    Candidate Login
+                </div>
+                <div class="title signup">
+                    Candidate Signup
+                </div>
+            </div>
+            
+            <div class="form-container">
+                <div class="slide-controls">
+                    <input type="radio" name="slide" id="login" checked="">
+                    <input type="radio" name="slide" id="signup">
+                    <label for="login" class="slide login">Login</label>
+                    <label for="signup" class="slide signup">Register</label>
+                    <div class="slider-tab"></div>
+                </div>
+                <div class="form-inner">
+                    <form method="POST" class="login" id="login-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="login">
+                        <div class="field">
+                            <input type="text" name="username" value="{{ username }}" placeholder="Username" required>
+                        </div>
+                        <div class="field">
+                            <input type="password" name="password" placeholder="Password" required>
+                        </div>
+                        <div class="pass-link"><a href="#">Forgot password?</a></div>
+                        <div class="field btn">
+                            <div class="btn-layer"></div>
+                            <input type="submit" value="Send OTP">
+                        </div>
+                        <div class="signup-link">Not a member? <a href="#">Signup now</a></div>
+                    </form>
+
+
+                    <!-- Signup Form -->
+                    <form action="" method="POST" class="signup" id="signup-form" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="signup">
+
+                        <div class="field">
+                            <input type="text" name="username" placeholder="Username" required>
+                        </div>
+                        <div class="field">
+                            <input type="text" name="fname" placeholder="First Name" required>
+                        </div>
+                        <div class="field">
+                            <input type="text" name="lname" placeholder="Last Name" required>
+                        </div>
+                        <div class="field">
+                            <input type="text" name="email" placeholder="Email Address" required>
+                        </div>
+                        <div class="field">
+                            <input type="text" name="party" placeholder="Enter Party" required>
+                        </div>
+                        
+                        <div id="manifesto-section" style="display: none; margin-bottom: 20px;">
+                            <label for="manifesto"><strong>Your Manifesto</strong></label><br>
+                            <textarea id="manifesto-input" rows="6" style="width: 100%;" placeholder="Write your vision, plans, and policies..."></textarea>
+                            <button type="button" id="save-manifesto-btn" style="margin-top: 10px;">Save Manifesto</button>
+                        </div>
+
+                        <!-- Button to trigger manifesto entry -->
+                        <div class="field">
+                            <button type="button" id="edit-manifesto-btn">Add / Edit Manifesto</button>
+                        </div>
+
+                        <!-- Hidden input to carry manifesto data in form -->
+                        <input type="hidden" name="manifesto" id="manifesto-hidden">
+
+
+                        <div class="field">
+                            <input type="password" name="password" placeholder="Password" required>
+                        </div>
+                        <div class="field">
+                            <input type="password" name="confirm_password" placeholder="Confirm password" required>
+                        </div>
+                        <div class="field">
+                            <label for="photo">Upload Photo:</label>
+                            <input type="file" name="photo" accept="image/*" required>
+                        </div>
+                        <div class="field btn">
+                            <div class="btn-layer"></div>
+                            <input type="submit" value="Signup">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{%static 'js/Accounts.js'%}"></script>
+    <script>
+        // Load previous manifesto content if any exists
+        document.addEventListener("DOMContentLoaded", function () {
+            const hiddenInput = document.getElementById("manifesto-hidden");
+            const manifestoInput = document.getElementById("manifesto-input");
+            if (hiddenInput.value.trim() !== "") {
+                manifestoInput.value = hiddenInput.value;
+            }
+        });
+
+        // Show the manifesto section when clicking "Add / Edit Manifesto"
+        document.getElementById("edit-manifesto-btn").addEventListener("click", function () {
+            document.getElementById("manifesto-section").style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top
+        });
+
+        // Save manifesto content to hidden input and hide the section
+        document.getElementById("save-manifesto-btn").addEventListener("click", function () {
+            const inputVal = document.getElementById("manifesto-input").value;
+            document.getElementById("manifesto-hidden").value = inputVal;
+            document.getElementById("manifesto-section").style.display = "none";
+            alert("Manifesto saved!");
+        });
+    </script>
+    {%endblock body%}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Voter Login | Signup{% endblock title %}
+
+{% block voteractive %}active{% endblock voteractive %}
+
+{% block body %}
+
+{% block extracss %}
+<link rel="stylesheet" href="{% static 'css/Accounts.css' %}">
+<style>
+    .bg-image{
+        filter: blur(8px);
+    -webkit-filter: blur(8px);
+    }
+</style>
+{% endblock extracss %}
+
+<div style="display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 70px); margin-top: 70px; padding-bottom: 50px;">
+    <div class="wrapper">
+        <div class="title-text">
+            <div class="title login">
+                Voter Login
+            </div>
+            <div class="title signup">
+                Voter Signup
+            </div>
+        </div>
+        
+        <div class="form-container">
+            <div class="slide-controls">
+                <input type="radio" name="slide" id="login" checked="">
+                <input type="radio" name="slide" id="signup">
+                <label for="login" class="slide login">Login</label>
+                <label for="signup" class="slide signup">Register</label>
+                <div class="slider-tab"></div>
+            </div>
+            <div class="form-inner">
+                <form method="POST" class="login" id="login-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="login">
+                    <div class="field">
+                        <input type="text" name="username" value="{{ username }}" placeholder="Username" required>
+                    </div>
+                    <div class="field">
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+                    <div class="pass-link"><a href="#">Forgot password?</a></div>
+                    <div class="field btn">
+                        <div class="btn-layer"></div>
+                        <input type="submit" value="Send OTP">
+                    </div>
+                    <div class="signup-link">Not a member? <a href="#">Signup now</a></div>
+                </form>
+                <form action="" method="POST" class="signup" id="signup-form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="signup">
+
+                    <div class="field">
+                        <input type="text" name="username" placeholder="Username" required>
+                    </div>
+                    <div class="field">
+                        <input type="text" name="fname" placeholder="First Name" required>
+                    </div>
+                    <div class="field">
+                        <input type="text" name="lname" placeholder="Last Name" required>
+                    </div>
+                    <div class="field">
+                        <input type="text" name="email" placeholder="Email Address" required>
+                    </div>
+                    <div class="field">
+                        <input type="text" name="phone" placeholder="Phone Number" required>
+                    </div>
+                    <div class="field">
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+                    <div class="field">
+                        <input type="password" name="confirm_password" placeholder="Confirm password" required>
+                    </div>
+                    <div class="field">
+                        <label for="photo">Upload Photo:</label>
+                        <input type="file" name="photo" accept="image/*" required>
+                    </div>
+                    <div class="field btn">
+                        <div class="btn-layer"></div>
+                        <input type="submit" value="Signup">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{%static 'js/Accounts.js'%}"></script>
+
+{%endblock body%}

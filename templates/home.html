@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Blockchain Voting System {% endblock title %}
+{% block homeactive %}active{% endblock homeactive %}
+
+{% block body %}
+{% block extracss %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock extracss %}
+<div style="justify-content: center; align-items: center; height: 100%; width: 100%; background-color: white;">
+    <header>
+        Blockchain Voting System
+    </header>
+    <main>
+        <h1>Secure & Transparent Elections on Blockchain</h1>
+        <p class="subtitle">
+            Empower your democracy with immutable, tamper-proof voting.
+            Verified voters, secure candidate registration, and real-time results — all decentralized.
+        </p>
+
+        <div class="features">
+            <div class="feature-box">
+                <div class="feature-icon">🔐</div>
+                <div class="feature-title">Voter Privacy</div>
+                <div class="feature-desc">
+                    Every vote is anonymous and protected using blockchain encryption.
+                </div>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon">✅</div>
+                <div class="feature-title">Verified Voters</div>
+                <div class="feature-desc">
+                    Only registered voters can participate — identity verified securely.
+                </div>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Transparent Results</div>
+                <div class="feature-desc">
+                    Real-time tallying and immutable results available for public audit.
+                </div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button onclick="location.href='/auth/voter'">Login As Voter</button>
+            <button onclick="location.href='/auth/candidate'">Login As Candidate</button>
+        </div>
+
+        <button class="toggle-theme" id="themeToggle">Toggle Dark Mode</button>
+
+        <section class="contact-section" id="contact">
+            <h2>Contact Us</h2>
+            <div class="contact-details">
+                <p><strong>Email:</strong> legend163104@gmail.com</p>
+                <p><strong>Phone:</strong> +91 6301826113</p>
+            </div>
+            <form class="contact-form" onsubmit="submitContactForm(event)">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required placeholder="Your full name" />
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="Your email address" />
+
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="4" required
+                    placeholder="Write your message here"></textarea>
+
+                <button type="submit">Send Message</button>
+            </form>
+        </section>
+    </main>
+</div>
+    <script>
+        const toggleBtn = document.getElementById('themeToggle');
+        toggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+        });
+
+        function submitContactForm(event) {
+            event.preventDefault();
+            const name = event.target.name.value.trim();
+            const email = event.target.email.value.trim();
+            const message = event.target.message.value.trim();
+
+            if (name && email && message) {
+                alert(`Thank you, ${name}! Your message has been received.`);
+                event.target.reset();
+            } else {
+                alert('Please fill out all fields before submitting.');
+            }
+        }
+    </script>
+    </body>
+
+    </html>
+
+    {% endblock body %}

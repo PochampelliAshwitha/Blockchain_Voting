@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Candidate Dashboard{% endblock title %}
+
+{% block candidate_dashboardactive %}active{% endblock candidate_dashboardactive %}
+
+{% block body %}
+
+{% block extracss %}
+<link rel="stylesheet" href="{% static 'css/Accounts.css' %}">
+<style>
+    .bg-image{
+        filter: blur(8px);
+    -webkit-filter: blur(8px);
+    }
+</style>
+{% endblock extracss %}
+
+
+
+{% endblock body %}
+

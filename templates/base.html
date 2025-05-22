@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="icon" href="{% static "images/logo.png" %}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <!-- jQuery (Required for Toastr) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <style>
+        .bg-image {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            background-image: url("{% static 'images/bg.png' %}");
+            background-repeat: no-repeat;
+            background-position: top center;
+            background-size: cover;
+            z-index: -1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            padding: 20px;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0077b6;
+            color: white;
+            text-align: center;
+            padding: 1rem 1rem;
+            font-size: 0.9rem;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.15);
+            user-select: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-image"></div> <!-- Background Image -->
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link  {% block homeactive %}{% endblock homeactive %}" href="/">Blockchain Voting
+                            System</a>
+                    </li>
+                    {% if request.user.is_authenticated %}
+                        {% if request.user.voter_profile %}
+                            <li class="nav-item">
+                                <a class="nav-link {% block voter_dashboardactive %}{% endblock voter_dashboardactive %}"
+                                    aria-current="page" href="{% url "dash_voter" %}">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% block voteactive %}{% endblock voteactive %}"
+                                    aria-current="page" href="{% url "vote" %}">Vote</a>
+                            </li>
+                            {% comment %} <li class="nav-item">
+                                <a class="nav-link {% block news_dataactive %}{% endblock news_dataactive %}"
+                                    aria-current="page" href="{% url " news_data" %}">News_Data</a>
+                            </li> {% endcomment %}
+                            <li class="nav-item">
+                                {% comment %} <a class="nav-link {% block personalizeactive %}{% endblock personalizeactive %}"
+                                    href="{% url 'personalize' %}">Personalise</a> {% endcomment %}
+                            </li>
+                        {% elif request.user.candidate_profile %}
+                            <li class="nav-item">
+                                <a class="nav-link {% block candidate_dashboardactive %}{% endblock candidate_dashboardactive %}"
+                                    aria-current="page" href="{% url "dash_candidate" %}">Dashboard</a>
+                            </li>
+                        {%else%}
+                            <li class="nav-item">
+                                <a class="nav-link {% block dash_election_commissionactive %}{% endblock dash_election_commissionactive %}"
+                                    aria-current="page" href="{% url "dash_election_commission" %}">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% block set_vote_dateactive %}{% endblock set_vote_dateactive %}"
+                                    aria-current="page" href="{% url "set_vote_date" %}">Set Vote Date</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link {% block voteractive %}{% endblock voteractive %}"
+                                href="{% url 'voter' %}">Voter Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% block candidateactive %}{% endblock candidateactive %}"
+                                href="{% url 'candidate' %}">Candidate Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% block election_commissionactive %}{% endblock election_commissionactive %}"
+                                href="{% url 'election_commission' %}">Election Commission Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <li class="nav-item d-flex align-items-center">
+                    <span id="clock" class="text-white me-2 fw-semibold"></span>
+                </li>
+                {% if request.user.is_authenticated %}
+                    {% if request.user.voter_profile %}
+                        <a class="nav-link {% block profileactive %}{% endblock profileactive %} dropdown-toggle text-light"
+                            href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ request.user.voter_profile.photo.url }}" alt="" class="rounded-circle" width="35"
+                                height="35">
+                            {{ request.user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'voter_profile' %}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    {%else %}
+                        <a class="nav-link {{ profileactive|default:'' }} dropdown-toggle text-light" href="#" id="userDropdown"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ request.user.candidate_profile.photo.url }}" alt="" class="rounded-circle" width="35"
+                                height="35">
+                            {{ request.user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'candidate_profile' %}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    {% endif %}
+                {% endif %}
+                {% comment %} <form class="d-flex" role="search" method="get" action="{% url 'search' %}">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Search......."
+                        aria-label="Search" value="{{ query }}">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form> {% endcomment %}
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="content">
+        {% block body %}
+        {% endblock body %}
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="ModalLabel"></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="ModalBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        &copy; 2025 Blockchain Voting System. All rights reserved.
+    </footer>
+    <script src="{% static 'javascript/base.js' %}"></script>
+    <script>
+        function updateClock() {
+            const now = new Date();
+
+            const day = String(now.getDate()).padStart(2, '0');
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const month = monthNames[now.getMonth()];
+            const year = now.getFullYear();
+
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            const dateTime = `Date: ${day}-${month}-${year} | Time: ${hours}:${minutes}:${seconds}`;
+
+            document.getElementById('clock').textContent = dateTime;
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();  // Initial call
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+        </script>
+
+    <!-- Alerts -->
+    <script>
+        $(document).ready(function () {
+            {% for message in messages %}
+            toastr.options = {
+                progressBar: true,
+                positionClass: "toast-top-right",
+                timeOut: 5000
+            };
+
+            {% if message.tags == "success" %}
+            toastr.success("{{ message }}");
+            {% elif message.tags == "error" %}
+            toastr.error("{{ message }}");
+            {% elif message.tags == "warning" %}
+            toastr.warning("{{ message }}");
+            {% else %}
+            toastr.info("{{ message }}");
+            {% endif %}
+            {% endfor %}
+        });
+    </script>
+
+</body>
+
+</html>

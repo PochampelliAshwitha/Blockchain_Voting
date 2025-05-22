@@ -1,0 +1,21 @@
+<html>
+<head><title>Blockchain Ledger</title></head>
+<body>
+<h1>Blockchain Voting Ledger</h1>
+
+{% for block in chain %}
+    <h3>Block {{ block.index }}</h3>
+    <p>Timestamp: {{ block.timestamp }}</p>
+    <p>Previous Hash: {{ block.previous_hash }}</p>
+    <p>Votes:</p>
+    <ul>
+    {% for vote in block.votes %}
+        <li>Voter ID: {{ vote.voter_id_hash }} - Candidate: {{ vote.candidate }}</li>
+    {% endfor %}
+    </ul>
+    <hr>
+{% endfor %}
+
+<a href="/vote/">Back to Voting</a>
+</body>
+</html>

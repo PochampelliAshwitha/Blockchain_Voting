@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Voter Dashboard{% endblock title %}
+
+{% block voter_dashboardactive %}active{% endblock voter_dashboardactive %}
+
+{% block body %}
+
+{% block extracss %}
+<link rel="stylesheet" href="{% static 'css/Accounts.css' %}">
+<style>
+    .bg-image{
+        filter: blur(8px);
+    -webkit-filter: blur(8px);
+    }
+</style>
+
+{% endblock extracss %}
+<div class="container bg-white p-4 rounded shadow" style="max-width: 1000px;">
+    <h1>Registered Candidates</h1>
+    <div class="row">
+    {% for candidate in candidates %}
+        <div class="col-md-4 mb-4">  <!-- Each card in a column -->
+            <div class="card" style="width: 100%;"> <!-- Full width of column -->
+                <img src="{{ candidate.photo.url }}" class="card-img-top" alt="Candidate Logo">
+                <div class="card-body">
+                    <h5 class="card-title">{{ candidate.party }}</h5>
+                    <p class="card-text"><strong>Leading By:</strong> {{candidate.user.get_full_name}}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Manifesto</strong></li>
+                    {% for point in candidate.manifesto.splitlines %}
+                        <li class="list-group-item">{{ point }}</li>
+                    {% endfor %}
+                </ul>
+                <div class="card-body">
+                    <a href="#" class="card-link">{{candidate.user.email}}</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>No candidates have registered yet.</p>
+    {% endfor %}
+    </div>
+</div>
+
+
+{% endblock body %}
+

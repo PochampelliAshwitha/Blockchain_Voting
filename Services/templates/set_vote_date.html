@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Voter Dashboard{% endblock title %}
+
+{% block voter_dashboardactive %}active{% endblock voter_dashboardactive %}
+
+{% block body %}
+
+{% block extracss %}
+<link rel="stylesheet" href="{% static 'css/Accounts.css' %}">
+<style>
+    .bg-image{
+        filter: blur(8px);
+    -webkit-filter: blur(8px);
+    }
+</style>
+
+{% endblock extracss %}
+<div class="container bg-white p-4 rounded shadow" style="max-width: 1000px;">
+    <div class="card p-4 mb-4 shadow">
+        <h5 class="mb-3">Set Voting Period</h5>
+
+        <!-- Show current start and end time -->
+        <div class="mb-3">
+            <strong>Current Start Time:</strong>
+            {{ election_period.start_time|date:"F d, Y - h:i A" }}<br>
+            <strong>Current End Time:</strong>
+            {{ election_period.end_time|date:"F d, Y - h:i A" }}
+        </div>
+
+        <!-- Voting Period Form -->
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-2">
+                <label for="start_time" class="form-label">Start Time</label>
+                <input type="datetime-local" class="form-control" name="start_time" value="{{ election_period.start_time|date:'Y-m-d\\TH:i' }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="end_time" class="form-label">End Time</label>
+                <input type="datetime-local" class="form-control" name="end_time" value="{{ election_period.end_time|date:'Y-m-d\\TH:i' }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Voting Period</button>
+        </form>
+    </div>
+</div>
+
+{%endblock body%}

@@ -1,0 +1,14 @@
+<!-- voting_app/templates/voting_app/vote.html -->
+<html>
+<head><title>Vote Now</title></head>
+<body>
+<h1>Vote for your Candidate</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit Vote</button>
+</form>
+
+</body>
+</html>

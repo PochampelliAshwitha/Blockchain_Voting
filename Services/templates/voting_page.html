@@ -1,0 +1,101 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Voter Dashboard{% endblock title %}
+{% block voteactive %}active{% endblock voteactive %}
+
+{% block extracss %}
+<link rel="stylesheet" href="{% static 'css/Accounts.css' %}">
+<style>
+    .bg-image {
+        filter: blur(8px);
+        -webkit-filter: blur(8px);
+    }
+    .highlighted {
+        border: 2px solid green;
+        background-color: #e6ffe6;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+</style>
+{% endblock extracss %}
+
+{% block body %}
+
+{%if not already_voted%}
+    <div class="container bg-white p-4 rounded shadow mt-4" style="max-width: 800px;">
+        {% if election_period %}
+            <p class="text-muted">Voting is open from {{ election_period.start_time }} to {{ election_period.end_time }}</p>
+        {% endif %}
+        <h2 class="mb-4">Cast Your Vote</h2> 
+        <form method="POST" onsubmit="return validateSelection();">
+        {% csrf_token %}
+        {% for candidate in candidates %}
+            <div class="form-check mb-3">
+                <input class="form-check-input candidate-checkbox"
+                    type="checkbox"
+                    name="candidate_id"
+                    id="candidate{{ forloop.counter }}"
+                    value="{{ candidate.candidate_id }}">
+                <label class="form-check-label" for="candidate{{ forloop.counter }}">
+                    <img src="{{ candidate.photo.url }}" width="80px" class="me-2">
+                    {{ candidate.party }} 
+                    ({{ candidate.user.get_full_name }})
+                </label>
+            </div>
+        {% endfor %}
+
+        <div id="error-message" class="text-danger mb-3" style="display: none;">
+            Please select one candidate.
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Vote</button>
+    </form>
+
+{% else %}
+    <div class="container bg-white p-4 rounded shadow mt-4" style="max-width: 800px;">
+        <h2 class="mb-4">Already Voted</h2>
+        {% for candidate in candidates %}
+            <div class="form-check mb-3 {% if already_voted and candidate.candidate_id == voted_candidate_id %}highlighted{% endif %}">
+                <input class="form-check-input candidate-checkbox"
+                    type="checkbox"
+                    name="candidate_id"
+                    id="candidate{{ forloop.counter }}"
+                    value="{{ candidate.candidate_id }}"
+                    {% if already_voted %}disabled{% endif %}
+                    {% if already_voted and candidate.candidate_id == voted_candidate_id %}checked{% endif %}>
+                <label class="form-check-label" for="candidate{{ forloop.counter }}">
+                    <img src="{{ candidate.photo.url }}" width="80px" class="me-2">
+                    {{ candidate.party }} 
+                    {{ candidate.user.get_full_name }}
+                </label>
+            </div>
+        {% endfor %}
+{% endif %}
+
+<script>
+    // Only one checkbox can be selected
+    const checkboxes = document.querySelectorAll('.candidate-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                checkboxes.forEach(cb => {
+                    if (cb !== checkbox) cb.checked = false;
+                });
+            }
+        });
+    });
+
+    // Show error if nothing selected
+    function validateSelection() {
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        if (!anyChecked) {
+            document.getElementById('error-message').style.display = 'block';
+            return false; // prevent form submission
+        }
+        return true;
+    }
+</script>
+{%endblock body%}
+

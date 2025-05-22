@@ -1,0 +1,12 @@
+{
+    "chain": [
+        {
+            "index": 1,
+            "timestamp": "2025-05-20T14:40:56.450284",
+            "votes": [],
+            "previous_hash": "1",
+            "hash": "91169cfb5eb43fbd234979109ff1cac8fd0098e95ef89632c1da7fe255f068b5"
+        }
+    ],
+    "pending_votes": []
+}
